@@ -16,8 +16,8 @@ char *choices[] = {
                         "Exit",
                   };
 
-int main()
-{	ITEM **my_items;
+int main() {
+	ITEM **my_items;
 	int c;
 	MENU *my_menu;
         int n_choices, i;
