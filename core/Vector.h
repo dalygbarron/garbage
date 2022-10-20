@@ -1,5 +1,10 @@
 #pragma once
 
+/**
+ * Very basic int vector class. Doesn't have any vector math functions because
+ * they're pretty much useless with ints and I only really need this class to
+ * store positions and sizes.
+ */
 class Vector {
     public:
         int x;
