@@ -10,20 +10,25 @@
  */
 void coolStuff() {
 	Map map(Vector(COLS, LINES));
-	for (int x = 0; x < map.size.x; x++) {
-		for (int y = 0; y < map.size.y; y++) {
-			map.setTile(Vector(x, y), 0, 32 + rand() % 94);
-		}
-	}
-	attron(COLOR_PAIR(COLOUR) | A_UNDERLINE | A_BOLD);
-	for (int y = 0; y < map.size.y; y++) {
-		move(y, 0);
-		for (int x = 0; x < map.size.x; x++) {
-			addch(map.getTile(Vector(x, y), 0));
-		}
-	}
-	attroff(COLOR_PAIR(COLOUR) | A_UNDERLINE | A_BOLD);
+	printw("size %d * %d = %d\n", map.size.x, map.size.y, map.size.x * map.size.y);
 	getch();
+	while (true) {
+		for (int x = 0; x < map.size.x; x++) {
+			for (int y = 0; y < map.size.y; y++) {
+				map.setTile(Vector(x, y), 0, 32 + rand() % 94);
+			}
+		}
+		for (int y = 0; y < map.size.y; y++) {
+			move(y, 0);
+			for (int x = 0; x < map.size.x; x++) {
+				if (x % 2) attron(COLOR_PAIR(COLOUR));
+				addch(map.getTile(Vector(x, y), 0));
+				attroff(COLOR_PAIR(COLOUR));
+			}
+		}
+		refresh();
+		if (getch() == 'q') break;
+	}
 }
 
 /**
@@ -36,6 +41,7 @@ int main(int argc, char **args) {
 	start_color();
 	cbreak();
 	noecho();
+	raw();
 	keypad(stdscr, TRUE);
 	init_pair(COLOUR, COLOR_GREEN, COLOR_RED);
 	coolStuff();
