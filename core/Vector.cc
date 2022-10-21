@@ -29,4 +29,5 @@ Vector &Vector::operator+=(Vector const &rhs) {
 Vector &Vector::operator-=(Vector const &rhs) {
     this->x -= rhs.x;
     this->y -= rhs.y;
+    return *this;
 }

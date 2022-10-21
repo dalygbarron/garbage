@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdint.h>
 #include "Vector.h"
 
 /**
@@ -24,14 +25,30 @@ class Map {
         ~Map();
 
         /**
+         * Checks if a given location is within the bounds of this map.
+         * @param pos is the position within the layer.
+         * @param layer is the layer.
+         * @return true if this location is in the map and false otherwise.
+         */
+        bool inBounds(Vector pos, int layer) const;
+
+        /**
          * Gets the map tile at the given location.
          * @param pos is the location in the map. If the location is not in the
          *        map then 0 will be returned always.
          * @param layer is the layer the tile is on.
          * @return the tile code.
          */
-        char getTile(Vector pos, int layer) const;
+        uint8_t getTile(Vector pos, int layer) const;
+
+        /**
+         * Sets the value of the tile at the given point on the given layer.
+         * @param pos is the location in the layer to set.
+         * @param layer is the layer on which to set the tile.
+         * @param value is the value to give to the tile.
+         */
+        void setTile(Vector pos, int layer, uint8_t value);
 
     private:
-        char *tiles;
+        uint8_t *tiles;
 };
