@@ -5,7 +5,7 @@
 Action Dude::update(Game const &game) {
     if (rand() % 6 == 3) {
         game.sendMessage(Util::tprintf(
-            "Extreme aids episode number %d",
+            "Extreme aids wahoooooooooooooooo baby episode number %d",
             rand() % 99999999999
         ));
     }

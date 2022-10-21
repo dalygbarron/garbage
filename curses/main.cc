@@ -10,7 +10,35 @@
 #define COLOUR 1
 #define MENU_COLOUR 2
 #define MENU_HEIGHT 7
+#define STATS_WIDTH 12
 #define MESSAGE_LENGTH 200
+
+/**
+ * Moves somewhere then prints some text up to the given character count, and if
+ * the string given doesn't hit the character count then it continues printing
+ * spaces until it hits it.
+ * @param row is the row to be on.
+ * @param col is the column to be on.
+ * @param n is the number of characters to write.
+ * @param text is the text to write.
+ */
+void mvnprint(int row, int col, int n, char const *text) {
+	move(row, col);
+	bool reading = true;
+	for (int i = 0; i < n; i++) {
+		if (reading) {
+			char c = text[i];
+			if (c) {
+				addch(c);
+			} else {
+				addch(' ');
+				reading = false;
+			}
+		} else {
+			addch(' ');
+		}
+	}
+}
 
 /**
  * Checks if the screen is big enough to allow play.
@@ -62,7 +90,7 @@ void renderMenu(Dude const &player, char const *messages, int messageCursor) {
 			Util::wrap(messageCursor - i - 1, MENU_HEIGHT - 1) * MESSAGE_LENGTH;
 		// TODO: need to limit number of characters that can be written.
 		if (i == 0) attron(A_BOLD);
-		mvprintw(LINES - 1 - i, 10, "%s %d", message, i);
+		mvnprint(LINES - 1 - i, STATS_WIDTH, COLS - STATS_WIDTH - 1, message);
 		if (i == 0) attroff(A_BOLD);
 	}
 	attroff(COLOR_PAIR(MENU_COLOUR));
@@ -108,6 +136,7 @@ void coolStuff() {
 			message,
 			MESSAGE_LENGTH
 		);
+		messages[messageCursor * MESSAGE_LENGTH + MESSAGE_LENGTH - 1] = 0;
 		messageCursor = (messageCursor + 1) % (MENU_HEIGHT - 1);
 	};
 	game.start();
