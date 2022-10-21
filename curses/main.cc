@@ -15,7 +15,7 @@ void coolStuff() {
 	while (true) {
 		for (int x = 0; x < map.size.x; x++) {
 			for (int y = 0; y < map.size.y; y++) {
-				map.setTile(Vector(x, y), 0, 32 + rand() % 94);
+				if (rand() % 5 > 3) map.setTile(Vector(x, y), 0, 32 + rand() % 94);
 			}
 		}
 		for (int y = 0; y < map.size.y; y++) {
