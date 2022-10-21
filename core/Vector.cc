@@ -1,8 +1,8 @@
 #include "Vector.h"
 
 Vector::Vector() {
-    this->x = 0;
-    this->y = 0;
+    x = 0;
+    y = 0;
 }
 
 Vector::Vector(int x, int y) {
@@ -13,21 +13,63 @@ Vector::Vector(int x, int y) {
 Vector::~Vector() {}
 
 Vector Vector::operator+(Vector const &rhs) const {
-    return Vector(this->x + rhs.x, this->y + rhs.y);
+    return Vector(x + rhs.x, y + rhs.y);
+}
+
+Vector Vector::operator+(int rhs) const {
+    return Vector(x + rhs, y + rhs);
 }
 
 Vector Vector::operator-(Vector const &rhs) const {
-    return Vector(this->x - rhs.x, this->y - rhs.y);
+    return Vector(x - rhs.x, y - rhs.y);
+}
+
+Vector Vector::operator-(int rhs) const {
+    return Vector(x - rhs, y - rhs);
+}
+
+Vector Vector::operator*(Vector const &rhs) const {
+    return Vector(x * rhs.x, y * rhs.y);
+}
+
+Vector Vector::operator*(int rhs) const {
+    return Vector(x * rhs, y * rhs);
+}
+
+Vector Vector::operator/(Vector const &rhs) const {
+    return Vector(x / rhs.x, y / rhs.y);
+}
+
+Vector Vector::operator/(int rhs) const {
+    return Vector(x / rhs, y / rhs);
 }
 
 Vector &Vector::operator+=(Vector const &rhs) {
-    this->x += rhs.x;
-    this->y += rhs.y;
+    x += rhs.x;
+    y += rhs.y;
     return *this;
 }
 
 Vector &Vector::operator-=(Vector const &rhs) {
-    this->x -= rhs.x;
-    this->y -= rhs.y;
+    x -= rhs.x;
+    y -= rhs.y;
+    return *this;
+}
+
+Vector &Vector::operator*=(Vector const &rhs) {
+    x *= rhs.x;
+    y *= rhs.y;
+    return *this;
+}
+
+Vector &Vector::operator/=(Vector const &rhs) {
+    x /= rhs.x;
+    y /= rhs.y;
+    return *this;
+}
+
+Vector &Vector::operator=(Vector const &rhs) {
+    x = rhs.x;
+    y = rhs.y;
     return *this;
 }

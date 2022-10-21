@@ -1,9 +1,15 @@
-project('garbage', 'cpp')
+project('garbage', 'cpp', default_options : ['c_std=c11', 'cpp_std=c++11'])
 cc = meson.get_compiler('cpp')
 core_src = [
   'core/Bongo.cc',
   'core/Map.cc',
-  'core/Vector.cc'
+  'core/Vector.cc',
+  'core/Rect.cc',
+  'core/Dude.cc',
+  'core/Entity.cc',
+  'core/Game.cc',
+  'core/Action.cc',
+  'core/Util.cc'
 ]
 curses_src = [
   'curses/main.cc'

@@ -1,7 +1,12 @@
 #pragma once
 
+#include <vector>
 #include <stdint.h>
 #include "Vector.h"
+#include "Entity.h"
+
+// forward declaration.
+class Game;
 
 /**
  * Your usual level type thing. Stores a grid of ground tiles and a grid of wall
@@ -23,6 +28,13 @@ class Map {
          * deletes the map and it's tile data.
          */
         ~Map();
+
+        /**
+         * Updates the map and the entities within it.
+         * @param game is the game object which provides some info.
+         * @return true if all is well and false if the game should end.
+        */
+        bool update(Game const &game);
 
         /**
          * Checks if a given location is within the bounds of this map.
@@ -49,6 +61,13 @@ class Map {
          */
         void setTile(Vector pos, int layer, uint8_t value);
 
+        /**
+         * Adds an entity to the map.
+         * @param entity is the entity to add.
+         */
+        void addEntity(Entity *entity);
+
     private:
         uint8_t *tiles;
+        std::vector<Entity *> entities;
 };
