@@ -67,6 +67,12 @@ class Map {
          */
         void addEntity(Entity *entity);
 
+        /**
+         * Gives you a const reference to the entities.
+         * @return a reference to the entities.
+         */
+        std::vector<Entity *> const &getEntities() const;
+
     private:
         uint8_t *tiles;
         std::vector<Entity *> entities;

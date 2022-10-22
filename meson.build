@@ -9,7 +9,8 @@ core_src = [
   'core/Entity.cc',
   'core/Game.cc',
   'core/Action.cc',
-  'core/Util.cc'
+  'core/Util.cc',
+  'core/RenderParams.cc'
 ]
 curses_src = [
   'curses/main.cc'

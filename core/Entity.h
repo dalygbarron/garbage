@@ -2,6 +2,7 @@
 
 #include "Vector.h"
 #include "Action.h"
+#include "RenderParams.h"
 
 // forward declaration
 class Game;
@@ -24,4 +25,10 @@ class Entity {
          * @return the action the entity wants to take.
          */
         virtual Action update(Game const &game) = 0;
+
+        /**
+         * Tells you how this entity wants to be rendered.
+         * @return render params telling all.
+         */
+        virtual RenderParams getRenderParams() const = 0;
 };

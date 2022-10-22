@@ -11,3 +11,11 @@ Action Dude::update(Game const &game) {
     }
     return game.playerInput(*this);
 }
+
+RenderParams Dude::getRenderParams() const {
+    return RenderParams(
+        'g',
+        RenderParams::Colour::RED,
+        RenderParams::Effect::NONE
+    );
+}

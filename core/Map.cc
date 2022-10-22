@@ -45,3 +45,7 @@ void Map::setTile(Vector pos, int layer, uint8_t value) {
 void Map::addEntity(Entity *entity) {
     entities.push_back(entity);
 }
+
+std::vector<Entity *> const &Map::getEntities() const {
+    return entities;
+}

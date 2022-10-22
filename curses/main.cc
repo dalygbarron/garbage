@@ -7,11 +7,67 @@
 #include "Rect.h"
 #include "Util.h"
 
-#define COLOUR 1
-#define MENU_COLOUR 2
+#define COLOURS 16
 #define MENU_HEIGHT 7
 #define STATS_WIDTH 12
 #define MESSAGE_LENGTH 200
+
+int colours[COLOURS][COLOURS];
+int floorColour;
+int menuColour;
+
+/**
+ * Initialises the colours global so that it contains a colour pair for every
+ * combination of allowed colours.
+ */
+void initColours() {
+	for (int a = 0; a < COLOURS; a++) {
+		for (int b = 0; b < COLOURS; b++) {
+			int index = a * COLOURS + b;
+			init_pair(index, a, b);
+			colours[a][b] = index;
+		}
+	}
+	floorColour = colours[COLOR_GREEN][COLOR_BLACK];
+	menuColour = colours[COLOR_WHITE][COLOR_CYAN];
+}
+
+/**
+ * Converts a render params colour enum value to a curses colour value.
+ * @param colour is the colour to convert.
+ * @return the int coloru code.
+ */
+int renderParamsColour(RenderParams::Colour colour) {
+	switch (colour) {
+		case RenderParams::Colour::WHITE: return COLOR_WHITE;
+	}
+}
+
+/**
+ * Converts a render params effect to a curses colour value.
+ * @param effect is the effect to convert.
+ * @return the colour code.
+ */
+int renderParamsEffect(RenderParams::Effect effect) {
+	switch (effect) {
+		case RenderParams::Effect::BURNING: return COLOR_RED;
+		case RenderParams::Effect::FROZEN: return COLOR_CYAN;
+		case RenderParams::Effect::GLOWING: return COLOR_YELLOW;
+	}
+	return COLOR_BLACK;
+}
+
+/**
+ * Converts a render params to a colour pair code which can be used to render
+ * whatever it is.
+ * @param params the render params to convert.
+ * @return a colour pair id.
+ */
+int renderParamsColourPair(RenderParams params) {
+	int fg = renderParamsColour(params.colour);
+	int bg = renderParamsEffect(params.effect);
+	return colours[fg][bg];
+}
 
 /**
  * Moves somewhere then prints some text up to the given character count, and if
@@ -41,7 +97,7 @@ void mvnprint(int row, int col, int n, char const *text) {
 }
 
 /**
- * Checks if the screen is big enough to allow play.
+ * Checks if the screen is big enough to allow play and loops until it is.
  * @return true if all is well, and false if the player asked to quit.
  */
 bool checkScreen() {
@@ -57,7 +113,7 @@ bool checkScreen() {
 }
 
 void renderMap(Map const &map, Dude const &player, Vector camera) {
-	attron(COLOR_PAIR(COLOUR));
+	attron(COLOR_PAIR(floorColour));
 	for (int y = camera.y; y < camera.y + LINES - MENU_HEIGHT; y++) {
 		move(y - camera.y, 0);
 		for (int x = camera.x; x < camera.x + COLS; x++) {
@@ -65,13 +121,20 @@ void renderMap(Map const &map, Dude const &player, Vector camera) {
 			addch(tile ? tile : ' ');
 		}
 	}
-	attroff(COLOR_PAIR(COLOUR));
-	mvaddch(player.pos.y - camera.y, player.pos.x - camera.x, '@');
+	attroff(COLOR_PAIR(floorColour));
+	for (Entity const *entity: map.getEntities()) {
+		RenderParams params = entity->getRenderParams();
+		int colour = renderParamsColourPair(params);
+		attron(COLOR_PAIR(colour));
+		mvaddch(entity->pos.y, entity->pos.x, params.c);
+		attroff(COLOR_PAIR(colour));
+	}
+	//mvaddch(player.pos.y - camera.y, player.pos.x - camera.x, '@');
 	move(player.pos.y - camera.y, player.pos.x - camera.x);
 }
 
 void renderMenu(Dude const &player, char const *messages, int messageCursor) {
-	attron(COLOR_PAIR(MENU_COLOUR));
+	attron(COLOR_PAIR(menuColour));
 	mvprintw(
 		LINES - MENU_HEIGHT,
 		0,
@@ -93,7 +156,7 @@ void renderMenu(Dude const &player, char const *messages, int messageCursor) {
 		mvnprint(LINES - 1 - i, STATS_WIDTH, COLS - STATS_WIDTH - 1, message);
 		if (i == 0) attroff(A_BOLD);
 	}
-	attroff(COLOR_PAIR(MENU_COLOUR));
+	attroff(COLOR_PAIR(menuColour));
 }
 
 /**
@@ -154,8 +217,7 @@ int main(int argc, char **args) {
 	noecho();
 	raw();
 	keypad(stdscr, TRUE);
-	init_pair(COLOUR, COLOR_GREEN, COLOR_BLACK);
-	init_pair(MENU_COLOUR, COLOR_BLACK, COLOR_CYAN);
+	initColours();
 	coolStuff();
 	endwin();
 }
