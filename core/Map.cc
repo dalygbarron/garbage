@@ -7,7 +7,6 @@ Map::Map(Vector size): size(size) {
             setTile(Vector(x, y), 0, 44 + rand() % 5);
         }
     }
-    printf("(s %d %d)", size.x, size.y);
 }
 
 Map::~Map() {

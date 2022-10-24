@@ -102,10 +102,13 @@ void mvnprint(int row, int col, int n, char const *text) {
  */
 bool checkScreen() {
 	while (true) {
-		Vector screenSize(COLS, LINES);
-		if (screenSize.x >= 80 && screenSize.y >= 25) return true;
+		if (COLS >= 80 && LINES >= 24) return true;
 		clear();
-		printw("Terminal must be at least 80x25 to play\n");
+		printw(
+			"Terminal must be at least 80x25 to play, but is %dx%d\n",
+			COLS,
+			LINES
+		);
 		printw("Press q to quit");
 		refresh();
 		if (getch() == 'q') return false;
@@ -126,7 +129,7 @@ void renderMap(Map const &map, Dude const &player, Vector camera) {
 		RenderParams params = entity->getRenderParams();
 		int colour = renderParamsColourPair(params);
 		attron(COLOR_PAIR(colour));
-		mvaddch(entity->pos.y, entity->pos.x, params.c);
+		mvaddch(entity->pos.y - camera.y, entity->pos.x - camera.x, params.c);
 		attroff(COLOR_PAIR(colour));
 	}
 	//mvaddch(player.pos.y - camera.y, player.pos.x - camera.x, '@');

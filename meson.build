@@ -1,5 +1,8 @@
 project('garbage', 'cpp', default_options : ['c_std=c11', 'cpp_std=c++11'])
-cc = meson.get_compiler('cpp')
+
+#add_project_arguments('-fsanitize=address', language : 'cpp')
+#add_project_link_arguments('-fsanitize=address', language : 'cpp')
+
 core_src = [
   'core/Bongo.cc',
   'core/Map.cc',
@@ -15,6 +18,7 @@ core_src = [
 curses_src = [
   'curses/main.cc'
 ]
+cc = meson.get_compiler('cpp')
 curses_deps = [
   cc.find_library('ncurses', dirs: ['/usr/local/opt/ncurses/lib']),
   cc.find_library('menu', dirs: ['/usr/local/opt/ncurses/lib']),
