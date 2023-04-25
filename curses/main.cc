@@ -41,6 +41,8 @@ int renderParamsColour(RenderParams::Colour colour) {
 	switch (colour) {
 		case RenderParams::Colour::WHITE: return COLOR_WHITE;
 	}
+	// TODO: other colours need to exist too I guess.
+	return COLOR_RED;
 }
 
 /**

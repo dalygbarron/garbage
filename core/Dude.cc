@@ -9,7 +9,8 @@ Action Dude::update(Game const &game) {
             rand() % 99999999999
         ));
     }
-    return game.playerInput(*this);
+    if (game.playerInput) return game.playerInput(*this);
+    return Action();
 }
 
 RenderParams Dude::getRenderParams() const {

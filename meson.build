@@ -1,7 +1,7 @@
 project('garbage', 'cpp', default_options : ['c_std=c11', 'cpp_std=c++11'])
 
-add_project_arguments('-fsanitize=address', language : 'cpp')
-add_project_link_arguments('-fsanitize=address', language : 'cpp')
+#add_project_arguments('-fsanitize=address', language : 'cpp')
+#add_project_link_arguments('-fsanitize=address', language : 'cpp')
 
 core_src = [
   'core/Bongo.cc',
