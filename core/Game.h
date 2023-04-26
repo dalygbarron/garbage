@@ -4,23 +4,20 @@
 #include "Map.h"
 #include "Action.h"
 #include "Dude.h"
+#include "MessageStore.h"
 
 /**
  * Represents the overall game state.
  */
 class Game {
     public:
+        MessageStore messageStore;
+
         /**
          * Callback for when the player needs to provide input.
          * @param player is the player dude.
          */
         std::function<Action(Dude const &player)> playerInput = nullptr;
-
-        /**
-         * Callback for when the game wants to put a message on the game
-         * console. Btw the string it sends is not permanent so save it.
-         */
-        std::function<void(char const *)> playerMessage = nullptr;
 
         /**
          * Load default game.
@@ -45,12 +42,6 @@ class Game {
          * @return const ref to the current map.
          */
         Map const &getCurrentMap() const;
-
-        /**
-         * Sends a message callback if the callback has been defined.
-         * @param message is the message to send.
-         */
-        void sendMessage(char const *message) const;
 
     private:
         std::unordered_map<int, Map *> maps;

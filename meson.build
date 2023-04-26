@@ -13,7 +13,8 @@ core_src = [
   'core/Game.cc',
   'core/Action.cc',
   'core/Util.cc',
-  'core/RenderParams.cc'
+  'core/RenderParams.cc',
+  'core/MessageStore.cc'
 ]
 curses_src = [
   'curses/main.cc'

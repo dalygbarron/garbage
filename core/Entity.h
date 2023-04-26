@@ -24,7 +24,7 @@ class Entity {
          * @param game is the game which is used for callbacks and shiet.
          * @return the action the entity wants to take.
          */
-        virtual Action update(Game const &game) = 0;
+        virtual Action update(Game &game) = 0;
 
         /**
          * Tells you how this entity wants to be rendered.

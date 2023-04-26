@@ -2,7 +2,7 @@
 
 /**
  * Representation of how some stuff should be drawn.
-*/
+ */
 class RenderParams {
     public:
         char c;
@@ -34,6 +34,6 @@ class RenderParams {
          *        whatever.
          * @param colour is the colour to draw the thing with.
          * @param effect is an effect to draw on the things.
-        */
+         */
         RenderParams(char c, Colour colour, Effect effect);
 };

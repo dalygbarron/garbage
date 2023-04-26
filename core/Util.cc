@@ -5,6 +5,7 @@
 static char tempBuffer[Util::BUFFER_LENGTH];
 
 char const *Util::tprintf(char const *fmt, ...) {
+    // TODO: roll this into message store to save allocations and shit.
     va_list args;
     va_start(args, fmt);
     vsnprintf(tempBuffer, BUFFER_LENGTH, fmt, args);

@@ -8,9 +8,7 @@
 #include "Util.h"
 
 #define COLOURS 16
-#define MENU_HEIGHT 7
-#define STATS_WIDTH 12
-#define MESSAGE_LENGTH 200
+#define MENU_HEIGHT 5
 
 int colours[COLOURS][COLOURS];
 int floorColour;
@@ -29,7 +27,7 @@ void initColours() {
 		}
 	}
 	floorColour = colours[COLOR_GREEN][COLOR_BLACK];
-	menuColour = colours[COLOR_WHITE][COLOR_CYAN];
+	menuColour = colours[COLOR_WHITE][COLOR_BLACK];
 }
 
 /**
@@ -40,9 +38,9 @@ void initColours() {
 int renderParamsColour(RenderParams::Colour colour) {
 	switch (colour) {
 		case RenderParams::Colour::WHITE: return COLOR_WHITE;
+		case RenderParams::Colour::RED: return COLOR_RED;
+		default: return COLOR_BLACK;
 	}
-	// TODO: other colours need to exist too I guess.
-	return COLOR_RED;
 }
 
 /**
@@ -55,8 +53,8 @@ int renderParamsEffect(RenderParams::Effect effect) {
 		case RenderParams::Effect::BURNING: return COLOR_RED;
 		case RenderParams::Effect::FROZEN: return COLOR_CYAN;
 		case RenderParams::Effect::GLOWING: return COLOR_YELLOW;
+		default: return COLOR_BLACK;
 	}
-	return COLOR_BLACK;
 }
 
 /**
@@ -120,7 +118,7 @@ bool checkScreen() {
 void renderMap(Map const &map, Dude const &player, Vector camera) {
 	attron(COLOR_PAIR(floorColour));
 	for (int y = camera.y; y < camera.y + LINES - MENU_HEIGHT; y++) {
-		move(y - camera.y, 0);
+		move(y - camera.y + 1, 0);
 		for (int x = camera.x; x < camera.x + COLS; x++) {
 			int tile = map.getTile(Vector(x, y), 0);
 			addch(tile ? tile : ' ');
@@ -131,34 +129,33 @@ void renderMap(Map const &map, Dude const &player, Vector camera) {
 		RenderParams params = entity->getRenderParams();
 		int colour = renderParamsColourPair(params);
 		attron(COLOR_PAIR(colour));
-		mvaddch(entity->pos.y - camera.y, entity->pos.x - camera.x, params.c);
+		mvaddch(entity->pos.y - camera.y + 1, entity->pos.x - camera.x, params.c);
 		attroff(COLOR_PAIR(colour));
 	}
-	//mvaddch(player.pos.y - camera.y, player.pos.x - camera.x, '@');
-	move(player.pos.y - camera.y, player.pos.x - camera.x);
+	move(0, 0);
 }
 
-void renderMenu(Dude const &player, char const *messages, int messageCursor) {
+void renderMenu(Dude const &player, Game const &game) {
 	attron(COLOR_PAIR(menuColour));
+	// Top Bar.
 	mvprintw(
-		LINES - MENU_HEIGHT,
 		0,
-		"%s (%d %d %d)",
+		0,
+		"%s (%d %d %d) Healthy",
 		"Daly Barron",
 		player.pos.x,
 		player.pos.y,
-		0
+		game.messageStore.getCursor()
 	);
-	for (int y = LINES - MENU_HEIGHT + 1; y < LINES; y++) {
+	// Message area.
+	for (int y = LINES - MENU_HEIGHT; y < LINES; y++) {
 		move(y, 0);
 		for (int x = 0; x < COLS; x++) addch(' ');
 	}
-	for (int i = 0; i < MENU_HEIGHT - 1; i++) {
-		char const *message = messages +
-			Util::wrap(messageCursor - i - 1, MENU_HEIGHT - 1) * MESSAGE_LENGTH;
-		// TODO: need to limit number of characters that can be written.
+	for (int i = 0; i < MENU_HEIGHT; i++) {
+		char const *message = game.messageStore[i];
 		if (i == 0) attron(A_BOLD);
-		mvnprint(LINES - 1 - i, STATS_WIDTH, COLS - STATS_WIDTH - 1, message);
+		mvnprint(LINES - 1 - i, 0, COLS - 1, message);
 		if (i == 0) attroff(A_BOLD);
 	}
 	attroff(COLOR_PAIR(menuColour));
@@ -168,12 +165,9 @@ void renderMenu(Dude const &player, char const *messages, int messageCursor) {
  * Does the needful.
  */
 void coolStuff() {
-	int messageCursor = 0;
-	char messages[(MENU_HEIGHT - 1) * MESSAGE_LENGTH];
-	for (int i = 0; i < sizeof(messages) * sizeof(char); i++) messages[i] = 0;
 	Vector camera;
 	Game game;
-	game.playerInput = [game, camera, &messageCursor, &messages](
+	game.playerInput = [&game, &camera](
 		Dude const &player
 	) mutable {
 		if (!checkScreen()) return Action(Action::Type::QUIT);
@@ -183,29 +177,36 @@ void coolStuff() {
 			camera = player.pos - screenSize / 2;
 		}
 		Map const &map = game.getCurrentMap();
-		renderMenu(player, messages, messageCursor);
+		renderMenu(player, game);
 		renderMap(map, player, camera);
 		refresh();
 		Action a;
 		a.type = Action::Type::MOVE;
 		int ch = getch();
-		if (ch == 'q') a.type = Action::Type::QUIT;
-		else if (ch == 'w') a.pos.y = -1;
-		else if (ch == 's') a.pos.y = 1;
-		else if (ch == 'a') a.pos.x = -1;
-		else if (ch == 'd') a.pos.x = 1;
+		if (ch == 'q') {
+			a.type = Action::Type::QUIT;
+		} else if (ch == 'k') {
+			a.pos.y = -1;
+		} else if (ch == 'j') {
+			a.pos.y = 1;
+		} else if (ch == 'h'){
+			a.pos.x = -1;
+		} else if (ch == 'l') {
+			a.pos.x = 1;
+		} else if (ch == 'y') {
+			a.pos.x = -1;
+			a.pos.y = -1;
+		} else if (ch == 'u') {
+			a.pos.x = 1;
+			a.pos.y = -1;
+		} else if (ch == 'b') {
+			a.pos.x = -1;
+			a.pos.y = 1;
+		} else if (ch == 'n') {
+			a.pos.x = 1;
+			a.pos.y = 1;
+		}
 		return a;
-	};
-	game.playerMessage = [&messages, &messageCursor](
-		char const *message
-	) mutable {
-		strncpy(
-			messages + messageCursor * MESSAGE_LENGTH,
-			message,
-			MESSAGE_LENGTH
-		);
-		messages[messageCursor * MESSAGE_LENGTH + MESSAGE_LENGTH - 1] = 0;
-		messageCursor = (messageCursor + 1) % (MENU_HEIGHT - 1);
 	};
 	game.start();
 }
@@ -222,6 +223,7 @@ int main(int argc, char **args) {
 	noecho();
 	raw();
 	keypad(stdscr, TRUE);
+	curs_set(0);
 	initColours();
 	coolStuff();
 	endwin();

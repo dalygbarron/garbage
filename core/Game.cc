@@ -20,7 +20,3 @@ void Game::start() {
 Map const &Game::getCurrentMap() const {
     return *(maps.at(currentMap));
 }
-
-void Game::sendMessage(char const *message) const {
-    if (this->playerMessage) this->playerMessage(message);
-}

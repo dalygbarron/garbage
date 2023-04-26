@@ -34,7 +34,7 @@ class Map {
          * @param game is the game object which provides some info.
          * @return true if all is well and false if the game should end.
         */
-        bool update(Game const &game);
+        bool update(Game &game);
 
         /**
          * Checks if a given location is within the bounds of this map.

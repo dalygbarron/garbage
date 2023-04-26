@@ -13,7 +13,7 @@ Map::~Map() {
     delete[] tiles;
 }
 
-bool Map::update(Game const &game) {
+bool Map::update(Game &game) {
     for (Entity *entity: entities) {
         Action a = entity->update(game);
         if (a.type == Action::Type::QUIT) return false;
